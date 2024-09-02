@@ -10,13 +10,15 @@ interface LoginForm {
 }
 
 interface UserData {
-    id: number,
-    name: string,
+    data: {
+        id: number;
+        name: string;
+    }
 }
 
 export default function Login() {
     const [loginForm, setLoginForm] = useState<LoginForm>({ email: '', password: '' });
-    const [csrfToken, setCsrfToken] = useState<string>('');
+    const [userData, setUserData] = useState<UserData | null>(null);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -27,16 +29,20 @@ export default function Login() {
         event.preventDefault();
         axios.get<string>('http://localhost:8000/sanctum/csrf-cookie')
             .then(response => {
-                console.log(response.data)
+                console.log(response.data);
                 localStorage.setItem('csrf-token', response.data);
             })
             .catch(error => {
                 console.error(error);
             });
-        axios.post<UserData>('http://localhost:8000/testPost', loginForm)
+
+        axios.post<UserData>('http://localhost:8000/login', loginForm)
             .then(response => {
-                setCsrfToken(response.data);
-                localStorage.setItem('csrf-token', csrfToken);
+                const receivedUserData = response.data;
+                if (receivedUserData) { 
+                    setUserData(receivedUserData);
+                    localStorage.setItem('user-data', JSON.stringify(receivedUserData)); 
+                }
             })
             .catch(error => {
                 console.error(error);
@@ -45,18 +51,16 @@ export default function Login() {
 
     return (
         <AuthLayout>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-10 rounded-md bg-zinc-600">
                 <div className="flex flex-col">
                     <Label>Email:</Label>
                     <input type="email" className="border rounded-md border-sm border-slate-700"
                         name="email" value={loginForm.email} onChange={handleInputChange} />
-
                 </div>
                 <div className="flex flex-col">
                     <Label>Password: </Label>
                     <input type="password" className="border rounded-md border-sm border-slate-700"
                         name="password" value={loginForm.password} onChange={handleInputChange} />
-
                 </div>
                 <ButtonPrimary>Logar</ButtonPrimary>
             </form>

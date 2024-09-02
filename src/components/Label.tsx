@@ -1,5 +1,6 @@
-export default function Label({children}) {
+export default function Label({children}, color : string = "zinc-200") {
+    const classData = "font-mono text-" + color;
     return (
-        <label className="font-mono text-slate-600">{children}</label>
+        <label className={classData}>{children}</label>
     )
 }
