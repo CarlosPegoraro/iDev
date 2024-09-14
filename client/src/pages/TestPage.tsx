@@ -17,7 +17,7 @@ export default function TestPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        axios.get<LaravelData>('http://localhost:8000/')
+        axios.get<LaravelData>('http://localhost:8000/api/')
             .then(response => {
                 setData(response.data);
                 setIsLoading(false);
