@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use App\Models\SeassionToken;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,11 +25,14 @@ class AuthController extends Controller
             $ip = $request->header('host');
             $datetime = new Carbon();
             $token = Hash::make($user->id . $datetime . $ip);
-            $authToken = $user->seassionToken->create([
+            $seassionToken = new SeassionToken([
                 'token' => $token,
                 'ip_address' => $ip,
-                'user_agent' => $userAgent
+                'user_agent' => $userAgent,
+                'remember' => $request->input('remember') ?? false,
             ]);
+
+            $authToken = $user->seassionToken()->save($seassionToken);
             return redirect()->json([
                 'user' => [
                     'name' => $user->name,
@@ -37,5 +41,7 @@ class AuthController extends Controller
                 'token' => $authToken->token,
             ]);
         }
+
+        return response()->json(['error' => 'user not found'], 404);
     }
 }

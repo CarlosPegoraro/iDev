@@ -46,7 +46,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function seassion(): HasOne
+    public function seassionToken(): HasOne
     {
         return $this->hasOne(SeassionToken::class);
     }
