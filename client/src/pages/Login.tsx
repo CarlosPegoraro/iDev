@@ -15,7 +15,7 @@ interface UserData {
 }
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.baseURL = 'http://localhost:8001';
 
 export default function Login() {
     const [loginForm, setLoginForm] = useState<LoginForm>({ email: '', password: '' });
@@ -28,21 +28,14 @@ export default function Login() {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        try {
-            await axios.get('/sanctum/csrf-cookie');
-            const response = await axios.post<UserData>('/login', loginForm, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            });
-            console.log('Login bem-sucedido:', response.data);
-            setUserData(response.data);
-            // Redirecione ou atualize o estado conforme necessário
-        } catch (error) {
-            console.error('Erro no login:', error);
-            // Trate os erros aqui
-        }
+        const response = await axios.post<UserData>('/login', loginForm, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+        console.log('Login bem-sucedido:', response.data);
+        setUserData(response.data);
     };
 
     return (

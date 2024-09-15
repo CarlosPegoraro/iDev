@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Interface para os dados recebidos
 interface LaravelData {
-    Laravel: string;
+    message: string;
 }
 interface PostData {
     resposta: string;
@@ -17,7 +17,7 @@ export default function TestPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        axios.get<LaravelData>('http://localhost:8000/api/')
+        axios.get<LaravelData>('http://localhost:8001/api/') // Adicionado withCredentials
             .then(response => {
                 setData(response.data);
                 setIsLoading(false);
@@ -36,12 +36,13 @@ export default function TestPage() {
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        axios.post('http://localhost:8000/testPost', postData)
+        axios.post('http://localhost:8001/testPost', postData, { withCredentials: true }) // Alterado para a porta 8001 e adicionado withCredentials
             .then(response => {
                 setApiResponse(response.data.resposta); // Atualizando somente a resposta da API
             })
             .catch(error => {
                 console.error(error);
+                setError("Failed to submit data");
             });
     };
 
@@ -51,7 +52,7 @@ export default function TestPage() {
 
     return (
         <div>
-            Laravel version {data.Laravel}
+            Message: {data.message}
             <form onSubmit={handleSubmit}>
                 <label>
                     Resposta:
