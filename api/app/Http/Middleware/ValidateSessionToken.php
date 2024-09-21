@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ValidateSeassionToken
+class ValidateSessionToken
 {
     /**
      * Handle an incoming request.

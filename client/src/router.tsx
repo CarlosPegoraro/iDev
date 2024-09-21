@@ -2,7 +2,8 @@ import {
     BrowserRouter as Router,
     Routes,
     Route,
-    useLocation
+    useLocation,
+    Navigate
 } from 'react-router-dom';
 
 import Home from './pages/Home';
@@ -21,6 +22,8 @@ const AppRouter = () => {
 
 const RouteContainer = () => {
     const location = useLocation();
+    const token = localStorage.getItem('token');
+    
     let showNavbar = true;
 
     // Ensure Navbar is not shown on login, register, or resetPassword routes
@@ -32,12 +35,21 @@ const RouteContainer = () => {
         <>
             {showNavbar && <Navbar />}
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/testPage" element={<TestPage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Login />} />  // Assuming Login component is used for registration
-                <Route path="/resetPassword" element={<Login />} />  // Assuming Login component is used for resetting password
+                {!token ? (
+                    // Exibe apenas a rota de login quando não houver token
+                    <Route path="/login" element={<Login />} />
+                ) : (
+                    // Exibe todas as outras rotas quando houver token
+                    <>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/testPage" element={<TestPage />} />
+                        <Route path="/register" element={<Login />} />  {/* Supondo que o componente Login é usado para registro */}
+                        <Route path="/resetPassword" element={<Login />} />  {/* Supondo que o componente Login é usado para redefinição de senha */}
+                        {/* Redireciona para a Home se a rota for "/login" e o usuário estiver autenticado */}
+                        <Route path="/login" element={<Navigate to="/" />} />
+                    </>
+                )}
             </Routes>
         </>
     );
