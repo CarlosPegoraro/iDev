@@ -45,13 +45,12 @@ export default function Register() {
                 const response = await axios.post<LoginData>('register', loginForm);
                 const token = response.data.token;
                 const user = response.data.user;
-                console.log(token)
                 localStorage.setItem('authToken', token);
                 localStorage.setItem('user', JSON.stringify(user));
                 navigate('/');
             }
         } catch {
-            setError('Dados incorretos')
+            setError('Erro ao registrar')
         }
     };
 

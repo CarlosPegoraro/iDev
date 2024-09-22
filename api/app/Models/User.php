@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -49,5 +50,14 @@ class User extends Authenticatable
     public function sessionToken(): HasOne
     {
         return $this->hasOne(SessionToken::class);
+    }
+
+    public static function attempt(array $data): User|bool
+    {
+        $user = User::whereEmail($data['email'])->first();
+        if ($user && Hash::check($data['password'], $user->password)) {
+            return $user;
+        }
+        return false;
     }
 }

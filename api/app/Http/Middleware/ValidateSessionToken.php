@@ -16,7 +16,9 @@ class ValidateSessionToken
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!SessionToken::where('token' , '=', $request->header('authToken'))->first()) {
+        $token = SessionToken::where('token' , '=', $request->header('authToken'))->first();
+        if (!$token) {
+            $request->attributes->add(['userId' => $token->user_id]);
             return response()->json(['warning' => 'seassion expired'], 419);
         }
         return $next($request);

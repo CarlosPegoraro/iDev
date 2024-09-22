@@ -25,7 +25,6 @@ const RouteContainer = () => {
     const location = useLocation();
     const token = localStorage.getItem('token');
     
-    console.log(token);
     let showNavbar = true;
 
     // Ensure Navbar is not shown on login, register, or resetPassword routes
@@ -41,7 +40,7 @@ const RouteContainer = () => {
                     <>
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                        <Route path="*" element={<Navigate to="/login" />} />
+                        {/* <Route path="*" element={<Navigate to="/login" />} /> */}
                         <Route path="/resetPassword" element={<Login />} />
                     </>
                 ) : (

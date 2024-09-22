@@ -16,12 +16,12 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request): JsonResponse
     {
-        Auth::attempt([
+        $user = User::attempt([
             'email' => $request->input('email'),
             'password' => $request->input('password')
         ]);
 
-        if ($user = Auth::user()) {
+        if ($user) {
             $authToken = $this->createSessionToken($user, $request);
             return response()->json([
                 'user' => [
@@ -37,9 +37,8 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        $user = $request->header('userId');
+        $user = $request->attributes->get('userId');
         if (SessionToken::where('user_id', '=', $user)->delete()) {
-            Auth::logout();
             return response()->json(['message' => 'Logout sucessful'], 200);
         } else {
             return response()->json(['message' => 'Error in Logout'],500);
@@ -54,10 +53,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->input('password')),
         ]);
 
-        Auth::login($user);
-
-        dd($user);
-        if ($user = Auth::user()) {
+        if ($user) {
             $authToken = $this->createSessionToken($user, $request);
             return response()->json([
                 'user' => [
@@ -76,7 +72,9 @@ class AuthController extends Controller
         $userAgent = $request->header('User-Agent');
         $ip = $request->header('host');
         $datetime = (string) new Carbon();
+
         $token = Hash::make($user->id . $datetime . $ip);
+
         $sessionToken = new SessionToken([
             'token' => $token,
             'ip_address' => $ip,

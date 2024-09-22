@@ -20,9 +20,6 @@ interface LoginData {
     }
 }
 
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://localhost:8000/api/';
-
 export default function Login() {
     const [loginForm, setLoginForm] = useState<LoginForm>({ email: '', password: '' , remember: false});
     const [error, setError] = useState<string | null>(null);
@@ -36,7 +33,6 @@ export default function Login() {
             [name]: type === 'checkbox' ? checked : value  
         }));
     };
-    
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();

@@ -1,12 +1,8 @@
 <?php
 
-use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
-
 use function Pest\Laravel\postJson;
 
-it('validate the login system', function () {
+it('validate the register system', function () {
 
     $response = postJson('/api/register', [
         'email' => 'email@email.com',
