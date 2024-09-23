@@ -41,7 +41,7 @@ class AuthController extends Controller
         if (SessionToken::where('user_id', '=', $user)->delete()) {
             return response()->json(['message' => 'Logout sucessful'], 200);
         } else {
-            return response()->json(['message' => 'Error in Logout'],500);
+            return response()->json(['message' => 'Error in Logout'], 500);
         }
     }
 

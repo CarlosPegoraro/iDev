@@ -1,12 +1,18 @@
 <?php
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+
 use function Pest\Laravel\postJson;
 
 it('validate the register system', function () {
 
+    $email = Carbon::now();
+    $email = (string) $email->isoFormat('hms');
+    
     $response = postJson('/api/register', [
-        'email' => 'email@email.com',
-        'name' => 'testeTeste',
+        'email' => $email .  '@gmail.com',
+        'name' => 'test name',
         'password' => '123456789',
     ]);
 

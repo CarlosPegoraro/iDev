@@ -23,7 +23,7 @@ const AppRouter = () => {
 
 const RouteContainer = () => {
     const location = useLocation();
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
     
     let showNavbar = true;
 

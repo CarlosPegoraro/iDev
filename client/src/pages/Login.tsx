@@ -43,8 +43,10 @@ export default function Login() {
             console.log(token)
             localStorage.setItem('authToken', token);
             localStorage.setItem('user', JSON.stringify(user));
+            console.log('Token salvo:', localStorage.getItem('authToken')); 
             navigate('/');
         } catch {
+            // console.log(error)
             setError('Dados incorretos')
         }
     };

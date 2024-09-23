@@ -2,26 +2,29 @@
 
 use App\Models\SessionToken;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 use function Pest\Laravel\postJson;
 
 it('can logout a user', function () {
     // 1. Criar um usuário fake e um token de sessão
-    $user = User::factory()->create();
-    $token = SessionToken::factory()->create([
-        'user_id' => $user->id,
+    $user = User::factory()->create([
+        'password' => Hash::make('123456789')
     ]);
 
-    // 2. Simular o usuário autenticado (usando o token)
-    $this->withHeaders(['Authorization' => 'Bearer ' . $token->token])
-         ->postJson(route('logout'));
-
-    // 3. Verificar se o token foi excluído
-    $this->assertDatabaseMissing('session_tokens', [
-        'user_id' => $user->id,
+    $response = postJson('/api/login', [
+        'email' => $user->email,
+        'password' => '123456789',
+        'remember' => true,
     ]);
+
+    $data = $response->json();
+    $token = $data['token'];
+
+    $response = $this->withHeaders(['authToken' => $token])
+        ->postJson(route('logout'));
 
     // Verificar a resposta
     $response->assertStatus(200)
-             ->assertJson(['message' => 'Logout sucessful']);
+        ->assertJson(['message' => 'Logout sucessful']);
 });
