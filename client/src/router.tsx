@@ -36,10 +36,10 @@ const RouteContainer = () => {
     }
 
     useEffect(() => {
-        if (!token) {
+        if (!token && showNavbar) {
             navigate('/login');
         }
-    }, [token, navigate])
+    }, [token, navigate, showNavbar])
 
     return (
         <>
