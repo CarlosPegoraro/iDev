@@ -3,7 +3,8 @@ import {
     Routes,
     Route,
     useLocation,
-    Navigate
+    Navigate,
+    useNavigate
 } from 'react-router-dom';
 
 import Home from './pages/Home';
@@ -24,12 +25,17 @@ const AppRouter = () => {
 const RouteContainer = () => {
     const location = useLocation();
     const token = localStorage.getItem('authToken');
+    const navigate = useNavigate();
     
     let showNavbar = true;
 
     // Ensure Navbar is not shown on login, register, or resetPassword routes
     if (location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/resetPassword') {
         showNavbar = false;
+    }
+
+    if (!token) {
+        navigate('/login');
     }
 
     return (
