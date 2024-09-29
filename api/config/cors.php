@@ -4,7 +4,7 @@ return [
 
     'paths' => ['/**/*', '/*'],
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['http://localhost:5173', 'http://localhost:5173'],
+    'allowed_origins' => ['https://idev.developerpegoraro.dev.br', 'http://localhost:5173'],
     'allowed_headers' => ['*'],
     'supports_credentials' => true,
 
