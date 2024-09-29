@@ -13,6 +13,7 @@ import About from './pages/About';
 import TestPage from './pages/TestPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import { useEffect } from 'react';
 
 const AppRouter = () => {
     return (
@@ -26,7 +27,7 @@ const RouteContainer = () => {
     const location = useLocation();
     const token = localStorage.getItem('authToken');
     const navigate = useNavigate();
-    
+
     let showNavbar = true;
 
     // Ensure Navbar is not shown on login, register, or resetPassword routes
@@ -34,9 +35,11 @@ const RouteContainer = () => {
         showNavbar = false;
     }
 
-    if (!token) {
-        navigate('/login');
-    }
+    useEffect(() => {
+        if (!token) {
+            navigate('/login');
+        }
+    }, [token, navigate])
 
     return (
         <>
