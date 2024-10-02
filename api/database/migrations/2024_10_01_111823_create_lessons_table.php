@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('session_tokens', static function(Blueprint $table) {
-            $table->boolean('remember')->default(false);
+        Schema::create('lessons', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('description');
+            $table->string('video');
+            $table->foreignId('course_id')->constrained();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('seassion_tokens', static function (Blueprint $table) {
-            $table->dropColumn('remember');
-        });
+        Schema::dropIfExists('lessons');
     }
 };
