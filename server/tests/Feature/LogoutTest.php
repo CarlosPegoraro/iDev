@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use function Pest\Laravel\postJson;
 
 it('can logout a user', function () {
-    // 1. Criar um usuário fake e um token de sessão
+    
     $user = User::factory()->create([
         'password' => Hash::make('123456789')
     ]);

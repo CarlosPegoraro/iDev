@@ -1,72 +1,35 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import ButtonPrimary from "../components/Button";
+import TeacherInterface from "../interfaces/TeacherInterface";
 
-// Interface para os dados recebidos
-interface LaravelData {
-    message: string;
-}
-interface PostData {
-    resposta: string;
+interface ResponseData {
+    teachers: {
+        name: string
+    } | null
 }
 
 export default function TestPage() {
-    const [data, setData] = useState<LaravelData | null>(null);
-    const [postData, setPostData] = useState<PostData>({ resposta: '' });
-    const [apiResponse, setApiResponse] = useState<string>(''); // Estado para guardar a resposta da API
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const token = localStorage.getItem('authToken');
+    // const [data, setData] = useState<ResponseData>({teachers: null});
 
-    useEffect(() => {
-        axios.get<LaravelData>('http://localhost:8001/api/') // Adicionado withCredentials
-            .then(response => {
-                setData(response.data);
-                setIsLoading(false);
-            })
-            .catch(error => {
-                console.error(error);
-                setError("Failed to load data");
-                setIsLoading(false);
-            });
-    }, []); // Removi [data] para evitar loop infinito, não use estado como dependência se não houver re-fetch necessário
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setPostData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        axios.post('http://localhost:8001/testPost', postData, { withCredentials: true }) // Alterado para a porta 8001 e adicionado withCredentials
-            .then(response => {
-                setApiResponse(response.data.resposta); // Atualizando somente a resposta da API
-            })
-            .catch(error => {
-                console.error(error);
-                setError("Failed to submit data");
+        try {
+            const response = await axios.post<TeacherInterface>('teacher', null, {
+                headers: {
+                    'authToken': token
+                }
             });
-    };
-
-    if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
-    if (!data) return <p>No data available.</p>;
+            console.log(response.data)
+        } catch(e) {
+            console.error(e);
+        }
+    }
 
     return (
         <div>
-            Message: {data.message}
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Resposta:
-                    <input
-                        type="text"
-                        className="border-black border-1"
-                        name="resposta"
-                        value={postData.resposta}
-                        onChange={handleInputChange}
-                    />
-                </label>
-                <button type="submit">Submit</button>
-                <br/>
-                Test resposta: {apiResponse}  
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-10 rounded-md shadow-md bg-zinc-100">
+                <ButtonPrimary>Testar rota, consultar console</ButtonPrimary>
             </form>
         </div>
     );

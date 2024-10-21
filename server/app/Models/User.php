@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
@@ -48,11 +49,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function sessionToken(): HasOne
-    {
-        return $this->hasOne(SessionToken::class);
-    }
-
     public static function attempt(array $data): User|bool
     {
         $user = User::whereEmail($data['email'])->first();
@@ -61,6 +57,30 @@ class User extends Authenticatable
         }
         return false;
     }
+
+    public static function apiData($data = null): Collection|array
+    {
+        if ($data) {
+            $users = [];
+            foreach ($data as $user) {
+                $users[] = $user->only(['name', 'email']);
+            }
+        } else {
+            $users = self::all()->map(function ($user) {
+                return [
+                    'name' => $user->name,
+                    'email' => $user->email
+                ];
+            });
+        }
+        return $users;
+    }
+
+    public function sessionToken(): HasOne
+    {
+        return $this->hasOne(SessionToken::class);
+    }
+
 
     public function courses(): BelongsToMany
     {
